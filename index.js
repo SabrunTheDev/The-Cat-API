@@ -1,4 +1,3 @@
-import * as Carousel from "./Carousel.js";
 import axios from "axios";
 
 // The breed selection input element.
