@@ -23,6 +23,7 @@ const API_KEY =
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
+
 const breedUrl = "https://api.thecatapi.com/v1/breeds";
 
 const initialLoad = async () => {
@@ -95,48 +96,80 @@ initialLoad();
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
-breedSelect.addEventListener("click", async (retrieveInfo) => {
-  console.log("Works");
+breedSelect.addEventListener("change", async (retrieveInfo) => {
+  // console.log("Works");
   breedSelect.style.cursor = "wait";
-  try {
-    const listOfBreeds = await fetch(breedUrl);
-    if (!listOfBreeds.ok) {
-      throw new Error("Failed to fetch breeds");
+
+  const breedInfomationId = breedSelect.value;
+  console.log(breedInfomationId);
+
+  if (breedInfomationId) {
+    try {
+      const listOfBreeds = await fetch(breedUrl);
+      if (!listOfBreeds.ok) {
+        throw new Error("Failed to fetch breeds");
+      }
+      const breedsJson = await listOfBreeds.json();
+
+      const breedInfoUrl = `https://api.thecatapi.com/v1/breeds/${breedInfomationId}`;
+      const listOfOneBreed = await fetch(breedInfoUrl);
+      console.log(listOfOneBreed);
+      if (!listOfOneBreed.ok) {
+        throw new Error("Failed to fetch breeds");
+      }
+
+      // const imageUrl = `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedInfomationId}`;
+      // const fetchImageUrl = await fetch(imageUrl);
+      // const jsonImageUrl = await fetchImageUrl.json();
+      // console.log(imageUrl);
+
+      const oneBreedJson = await listOfOneBreed.json();
+
+      // carousel.innerHTML = "";
+      infoDump.innerHTML = "";
+
+      // const eachBreed = [];
+
+      const information = document.createElement("div");
+      infoDump.appendChild(information);
+      // information.innerHTML = `<h2>Name: ${oneBreedJson.name}</h2>
+      //   <p>Description: ${oneBreedJson.description}</p>
+      //   <p>Origin: ${oneBreedJson.origin}</p>`;
+
+      breedsJson.forEach((breed) => {
+        if (breedInfomationId == breed.id) {
+          const newCarouselItem = document.createElement("div");
+          newCarouselItem.setAttribute("id", breed.id);
+          newCarouselItem.setAttribute("class", "carousel-item");
+          // newCarouselItem.innerHTML = information.innerHTML;
+          information.innerHTML = `<h2>Name: ${breed.name}</h2>
+        <p>Description: ${breed.description}</p>
+        <p>Origin: ${breed.origin}</p>`;
+          carousel.appendChild(newCarouselItem);
+        }
+      });
+
+      // const breedCarousel = document.getElementById(breedInfomationId);
+      // breedCarousel.appendChild(information);
+      // console.log(breedCarousel);
+
+      // for (let i = 0; i <= breedsJson.length; i++) {
+      //   information.innerHTML = `<h2>Name: ${breedsJson[i].name}</h2>
+      //     <p>Description: ${breedsJson[i].description}</p>
+      //     <p>Origin: ${breedsJson[i].origin}</p>`;
+      //   return;
+      // }
+
+      // const catInfo = breedsJson.map((info) => ({
+      //   id: info.id,
+      //   name: info.name,
+      //   description: info.description,
+      //   origin: info.origin,
+      // }));
+      // console.log(breedSelect.innerText);
+    } catch (error) {
+      console.log(error);
     }
-    const breedsJson = await listOfBreeds.json();
-
-    carousel.innerHTML = "";
-    infoDump.innerHTML = "";
-
-    const eachBreed = [];
-    const information = document.createElement("div");
-    infoDump.appendChild(information);
-    breedsJson.forEach((breed) => {
-      const newCarouselItem = document.createElement("div");
-      carousel.appendChild(newCarouselItem);
-    });
-
-    for (let i = 0; i <= breedsJson.length; i++) {
-      information.innerHTML = `<h2>Name: ${breedsJson[i].name}</h2>
-        <p>Description: ${breedsJson[i].description}</p>
-        <p>Origin: ${breedsJson[i].origin}</p>`;
-      return;
-    }
-
-    console.log(eachBreed);
-
-    // const catInfo = breedsJson.map((info) => ({
-    //   id: info.id,
-    //   name: info.name,
-    //   description: info.description,
-    //   origin: info.origin,
-    // }));
-
-    // information.innerHTML = `<h2>Name: ${eachBreed.name}</h2>
-    //     <p>Description: ${eachBreed.description}</p>
-    //     <p>Origin: ${eachBreed.origin}</p>`;
-  } catch (error) {
-    console.log(error);
   }
 });
 
