@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 
 // The breed selection input element.
 const breedSelect = document.getElementById("breedSelect");
@@ -8,9 +8,12 @@ const infoDump = document.getElementById("infoDump");
 const progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 const getFavouritesBtn = document.getElementById("getFavouritesBtn");
+// The carousel div
+const carousel = document.getElementById("carouselInner");
 
 // Step 0: Store your API key here for reference and easy access.
-const API_KEY = "";
+const API_KEY =
+  "live_LRvfeoog9qBEGmd5ETCWA8byFUkevAyTtTvzMSHZpTJzOWjJEpZ0G11RAvoImM01";
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
@@ -20,6 +23,62 @@ const API_KEY = "";
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
+const breedUrl = "https://api.thecatapi.com/v1/breeds";
+
+const initialLoad = async () => {
+  try {
+    const listOfBreeds = await fetch(breedUrl);
+
+    if (!listOfBreeds.ok) {
+      throw new Error("Failed to fetch breeds");
+    }
+
+    const breedsJson = await listOfBreeds.json();
+
+    const catBreeds = breedsJson.map((breed) => breed);
+    // console.log(catBreeds);
+    const catInfo = catBreeds.map((info) => ({
+      id: info.id,
+      name: info.name,
+    }));
+    // console.log(catInfo);
+
+    /* forEach can be utilized as well to go through the breed aray, but map saves time */
+
+    // const catBreedInfo = [];
+    // breedsJson.forEach((breed) => {
+    //   catBreedInfo.push(breed);
+    // });
+    // // console.log(catBreedInfo);
+
+    // const catBreedIdName = [];
+
+    // catBreedInfo.forEach((breedId) => {
+    //   catBreedIdName.push(breedId.id, breedId.name);
+    // });
+
+    // // console.log(catBreedIdName);
+
+    // catBreedInfo.forEach((breedType) => {
+    //   const optionHere = document.createElement("option");
+    //   optionHere.value = breedType.id;
+    //   optionHere.textContent = breedType.name;
+    //   breedSelect.appendChild(optionHere);
+    // });
+
+    catInfo.forEach((breed) => {
+      const breedOption = document.createElement("OPTION");
+      breedOption.value = breed.id;
+      breedOption.textContent = breed.name;
+      breedSelect.appendChild(breedOption);
+      // console.log(breedOption);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+initialLoad();
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -35,6 +94,51 @@ const API_KEY = "";
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+
+breedSelect.addEventListener("click", async (retrieveInfo) => {
+  console.log("Works");
+  breedSelect.style.cursor = "wait";
+  try {
+    const listOfBreeds = await fetch(breedUrl);
+    if (!listOfBreeds.ok) {
+      throw new Error("Failed to fetch breeds");
+    }
+    const breedsJson = await listOfBreeds.json();
+
+    carousel.innerHTML = "";
+    infoDump.innerHTML = "";
+
+    const eachBreed = [];
+    const information = document.createElement("div");
+    infoDump.appendChild(information);
+    breedsJson.forEach((breed) => {
+      const newCarouselItem = document.createElement("div");
+      carousel.appendChild(newCarouselItem);
+    });
+
+    for (let i = 0; i <= breedsJson.length; i++) {
+      information.innerHTML = `<h2>Name: ${breedsJson[i].name}</h2>
+        <p>Description: ${breedsJson[i].description}</p>
+        <p>Origin: ${breedsJson[i].origin}</p>`;
+      return;
+    }
+
+    console.log(eachBreed);
+
+    // const catInfo = breedsJson.map((info) => ({
+    //   id: info.id,
+    //   name: info.name,
+    //   description: info.description,
+    //   origin: info.origin,
+    // }));
+
+    // information.innerHTML = `<h2>Name: ${eachBreed.name}</h2>
+    //     <p>Description: ${eachBreed.description}</p>
+    //     <p>Origin: ${eachBreed.origin}</p>`;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
@@ -87,9 +191,10 @@ const API_KEY = "";
  *   you delete that favourite using the API, giving this function "toggle" functionality.
  * - You can call this function by clicking on the heart at the top right of any image.
  */
-export async function favourite(imgId) {
-  // your code here
-}
+
+// export async function favourite(imgId) {
+//   // your code here
+// }
 
 /**
  * 9. Test your favourite() function by creating a getFavourites() function.
