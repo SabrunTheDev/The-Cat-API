@@ -24,6 +24,9 @@ const API_KEY =
  * This function should execute immediately.
  */
 
+// const page = document.querySelector("body");
+// page.style.height = "100vh";
+
 const breedUrl = "https://api.thecatapi.com/v1/breeds";
 
 const initialLoad = async () => {
@@ -118,14 +121,14 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
         throw new Error("Failed to fetch breeds");
       }
 
-      // const imageUrl = `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedInfomationId}`;
-      // const fetchImageUrl = await fetch(imageUrl);
-      // const jsonImageUrl = await fetchImageUrl.json();
-      // console.log(imageUrl);
+      const imageUrl = `https://api.thecatapi.com/v1/images/search?limit=8&breed_ids=${breedInfomationId}&api_key=${API_KEY}`;
+      const fetchImageUrl = await fetch(imageUrl);
+      const jsonImageUrl = await fetchImageUrl.json();
+      console.log(jsonImageUrl);
 
       const oneBreedJson = await listOfOneBreed.json();
 
-      // carousel.innerHTML = "";
+      carousel.innerHTML = "";
       infoDump.innerHTML = "";
 
       // const eachBreed = [];
@@ -135,17 +138,33 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
       // information.innerHTML = `<h2>Name: ${oneBreedJson.name}</h2>
       //   <p>Description: ${oneBreedJson.description}</p>
       //   <p>Origin: ${oneBreedJson.origin}</p>`;
-
       breedsJson.forEach((breed) => {
         if (breedInfomationId == breed.id) {
-          const newCarouselItem = document.createElement("div");
-          newCarouselItem.setAttribute("id", breed.id);
-          newCarouselItem.setAttribute("class", "carousel-item");
+          // const newCarouselItem = document.createElement("div");
+          // newCarouselItem.setAttribute("id", breed.id);
+          // newCarouselItem.setAttribute("class", "carousel-item active");
+          jsonImageUrl.forEach((image, index) => {
+            const breedImagesDiv = document.createElement("div");
+            breedImagesDiv.setAttribute("id", `${breed.id}`);
+            breedImagesDiv.classList.add("carousel-item");
+            if (index === 0) {
+              breedImagesDiv.classList.add("active");
+            }
+            const breedImages = document.createElement("img");
+            breedImages.src = image.url;
+            breedImages.setAttribute("class", "d-block w-100");
+            breedImages.style.height = "400px";
+            breedImages.style.border = "10px";
+            breedImagesDiv.appendChild(breedImages);
+            carousel.appendChild(breedImagesDiv);
+          });
           // newCarouselItem.innerHTML = information.innerHTML;
           information.innerHTML = `<h2>Name: ${breed.name}</h2>
         <p>Description: ${breed.description}</p>
-        <p>Origin: ${breed.origin}</p>`;
-          carousel.appendChild(newCarouselItem);
+        <p>Origin: ${breed.origin}</p>
+        <p>Temperament: ${breed.temperament}</p>
+        <p>Origin: ${breed.wikipedia_url}</p>`;
+          // carousel.appendChild(newCarouselItem);
         }
       });
 
