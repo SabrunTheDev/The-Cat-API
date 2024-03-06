@@ -1,3 +1,4 @@
+// import * as Carousel from "./Carousel";
 // import axios from "axios";
 
 // The breed selection input element.
@@ -140,12 +141,9 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
       //   <p>Origin: ${oneBreedJson.origin}</p>`;
       breedsJson.forEach((breed) => {
         if (breedInfomationId == breed.id) {
-          // const newCarouselItem = document.createElement("div");
-          // newCarouselItem.setAttribute("id", breed.id);
-          // newCarouselItem.setAttribute("class", "carousel-item active");
           jsonImageUrl.forEach((image, index) => {
             const breedImagesDiv = document.createElement("div");
-            breedImagesDiv.setAttribute("id", `${breed.id}`);
+            breedImagesDiv.setAttribute("id", `${breed.id}` + `${index + 1}`);
             breedImagesDiv.classList.add("carousel-item");
             if (index === 0) {
               breedImagesDiv.classList.add("active");
@@ -154,7 +152,7 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
             breedImages.src = image.url;
             breedImages.setAttribute("class", "d-block w-100");
             breedImages.style.height = "400px";
-            breedImages.style.border = "10px";
+            breedImages.style.marginRight = "100px";
             breedImagesDiv.appendChild(breedImages);
             carousel.appendChild(breedImagesDiv);
           });
@@ -162,12 +160,11 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
           information.innerHTML = `<h2>Name: ${breed.name}</h2>
         <p>Description: ${breed.description}</p>
         <p>Origin: ${breed.origin}</p>
-        <p>Temperament: ${breed.temperament}</p>
-        <p>Origin: ${breed.wikipedia_url}</p>`;
+        <p>Temperament: ${breed.temperament}</p>`;
           // carousel.appendChild(newCarouselItem);
         }
       });
-
+      start();
       // const breedCarousel = document.getElementById(breedInfomationId);
       // breedCarousel.appendChild(information);
       // console.log(breedCarousel);
@@ -190,6 +187,12 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
       console.log(error);
     }
   }
+});
+
+let carouselButton = document.querySelector(".carousel-control-next");
+
+carouselButton.addEventListener("click", (event) => {
+  console.log("Hello");
 });
 
 /**
@@ -245,7 +248,7 @@ breedSelect.addEventListener("change", async (retrieveInfo) => {
  */
 
 // export async function favourite(imgId) {
-//   // your code here
+//   console.log("Hello");
 // }
 
 /**
